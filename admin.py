@@ -46,6 +46,12 @@ class admin(commands.Cog):
             await ctx.send(f'error {cog} not found')
             return
         await ctx.send('sucess!')
+        
+            @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def purge(self, ctx, limit: int):
+        time.sleep(.3)
+        await ctx.channel.purge(limit = limit + 1)
 
 def setup(bot):
     bot.add_cog(admin(bot))
