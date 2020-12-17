@@ -2,15 +2,18 @@
 
 import discord
 from discord.ext import commands
+from cogs.greet import greet
 
-client = commands.Bot(command_prefix='./', case_insensitive=True)
+intents = discord.Intents.default()
+intents.members = True
+
+client = commands.Bot(command_prefix='./', case_insensitive=True, intents=intents)
 
 with open('secret.txt', 'r') as f:
     API_KEY =  f.read()
-    print(API_KEY)
 
 extensions = [
-
+            'cogs.greet'
 ]
 
 for extension in extensions:
