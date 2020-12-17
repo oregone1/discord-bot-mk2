@@ -1,6 +1,7 @@
 import discord
 import datetime
 import asyncio
+import json
 from discord.ext import commands
 from discord import Embed
 
@@ -10,7 +11,8 @@ class greet(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        print('test')
+        with open('./users.json', 'r') as jsonfile:
+            data = json.load(jsonfile)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com",
         description=f"Welcome to the server, {member.mention}! Please go to #ip to join the server.")
 
@@ -22,7 +24,11 @@ class greet(commands.Cog):
         channel = self.bot.get_channel(id=789043746255536169)
 
         await channel.send(embed=embed)
-        print(member)
+        data['user-xp'][str(member)] = '0'
+        with open('./users.json', 'w') as w:
+            json.dump(data, w, indent=2)
+        print(f'{member} joined the server and was registered to the json file')
+        jsonfile.close()
 
 def setup(bot):
     bot.add_cog(greet(bot))
