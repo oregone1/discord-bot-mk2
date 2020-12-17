@@ -47,7 +47,7 @@ class admin(commands.Cog):
             return
         await ctx.send('sucess!')
         
-            @commands.command()
+    @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, limit: int):
         time.sleep(.3)
