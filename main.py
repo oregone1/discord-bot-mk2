@@ -10,7 +10,7 @@ with open('secret.txt', 'r') as f:
     print(API_KEY)
 
 extensions = [
-
+            'cogs.admin'
 ]
 
 for extension in extensions:
