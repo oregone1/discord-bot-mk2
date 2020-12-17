@@ -6,7 +6,8 @@ from discord.ext import commands
 client = commands.Bot(command_prefix='./', case_insensitive=True)
 
 with open('secret.txt', 'r') as f:
-    API_KEY =  f
+    API_KEY =  f.read()
+    print(API_KEY)
 
 extensions = [
 
