@@ -1,0 +1,33 @@
+{
+  "commands":[
+    {
+      "name": "**Voice Commands**\n./j (join)",
+      "functions": "Joins a voice call"
+    },
+    {
+      "name": "./l (leave)",
+      "functions": "Leaves a voice call"
+    },
+    {
+      "name": "./p (play)",
+      "functions": "Plays the specified youtube URL"
+    },
+    {
+      "name": "**XP Commands** \n./leaderboard",
+      "functions": "Shows how much XP you have compared to others"
+    },
+    {
+      "name": "**Admin Commands**\n./load (cog)",
+      "functions": "Loads the specified cogs"
+    },
+    {
+      "name": "./unload (cogs)",
+      "functions": "Unloads the specified cogs"
+    },
+    {
+      "name": "./reload (cogs)",
+      "functions": "Reloads the specified cogs"
+    }
+}
+  ]
+}
