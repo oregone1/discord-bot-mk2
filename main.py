@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import discord
+import time
 from discord.ext import commands
 from cogs.greet import greet
 
@@ -14,7 +15,8 @@ with open('secret.txt', 'r') as f:
 
 extensions = [
             'cogs.greet',
-            'cogs.messages'
+            'cogs.messages',
+            'cogs.admin'
 ]
 
 for extension in extensions:
