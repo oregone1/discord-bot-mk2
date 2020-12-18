@@ -61,6 +61,12 @@ class admin(commands.Cog):
         time.sleep(.3)
         await ctx.channel.purge(limit = limit + 1)
 
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def kick(self, ctx, member: discord.Member, reason=None):
+        await member.kick(reason=reason)
+        await ctx.send(f'{member} was kicked by {ctx.message.author} for {reason}')
+
 def setup(bot):
     bot.add_cog(admin(bot))
     print('\'admin\' is loaded')
