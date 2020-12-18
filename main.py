@@ -13,7 +13,8 @@ with open('secret.txt', 'r') as f:
     API_KEY =  f.read()
 
 extensions = [
-            'cogs.greet'
+            'cogs.greet',
+            'cogs.messages'
 ]
 
 for extension in extensions:

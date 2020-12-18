@@ -24,11 +24,10 @@ class greet(commands.Cog):
         channel = self.bot.get_channel(id=789043746255536169)
 
         await channel.send(embed=embed)
-        data['user-xp'][str(member)] = '0'
+        data['user-xp'][str(member)] = "0, 0"
         with open('./users.json', 'w') as w:
-            json.dump(data, w, indent=2)
+            json.dump(data, w, indent=2, ensure_ascii=False)
         print(f'{member} joined the server and was registered to the json file')
-        jsonfile.close()
 
 def setup(bot):
     bot.add_cog(greet(bot))
