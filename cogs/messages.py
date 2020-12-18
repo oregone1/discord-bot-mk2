@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import Embed
 import json
 
 class messages(commands.Cog):
@@ -33,6 +34,19 @@ class messages(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         await self.update_user(message)
+
+    @commands.command()
+    async def leaderboard(self, ctx):
+        with open('./users.json', 'r') as f:
+            data = json.load(f)
+        embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
+        for key in data['user-xp'].keys():
+            embed.add_field(name=key, value=data['user-xp'][key], inline=False)
+        await ctx.send(embed=embed)
+        #embed.add_field(name='1st place')
+
+
+
 
 def setup(bot):
     bot.add_cog(messages(bot))
