@@ -37,16 +37,21 @@ class messages(commands.Cog):
 
     @commands.command()
     async def leaderboard(self, ctx):
+        leaderboard_order = {}
         with open('./users.json', 'r') as f:
             data = json.load(f)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
         for key in data['user-xp'].keys():
-            embed.add_field(name=key, value=data['user-xp'][key], inline=False)
+            leaderboard_order[data["user-xp"][key].split(',')[1]] = key
+
+
+
+        await ctx.send(leaderboard_order)
+
+
+        embed.add_field(name=key, value=f'level {data["user-xp"][key].split(",")[1]} \n current xp: {data["user-xp"][key].split(",")[0]}%', inline=False)
         await ctx.send(embed=embed)
-        #embed.add_field(name='1st place')
-
-
-
+        print(sorted(xp_order, reverse=True))
 
 def setup(bot):
     bot.add_cog(messages(bot))

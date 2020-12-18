@@ -28,6 +28,5 @@
       "name": "./reload (cogs)",
       "functions": "Reloads the specified cogs"
     }
-}
   ]
 }

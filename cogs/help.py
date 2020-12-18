@@ -1,11 +1,7 @@
 import discord
-import asyncio
 import datetime
 from discord.ext import commands
 from discord import Embed
-import json
-import os
-import datetime
 
 class help(commands.Cog):
 

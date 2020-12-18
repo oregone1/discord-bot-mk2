@@ -9,6 +9,7 @@ intents = discord.Intents.default()
 intents.members = True
 
 client = commands.Bot(command_prefix='./', case_insensitive=True, intents=intents)
+client.remove_command('help')
 
 with open('secret.txt', 'r') as f:
     API_KEY =  f.read()
