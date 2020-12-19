@@ -44,38 +44,15 @@ class messages(commands.Cog):
             data = json.load(f)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
 
-        #for key in data['user-xp'].keys():
-            #leaderboard_order[key] = data['user-xp'][key].split(',')[1]
-
         leaderboard_order = data['user-xp']
 
         listofTuples = sorted(leaderboard_order.items() , reverse=True, key=lambda x: x[1])
-        # Iterate over the sorted sequence
         for i, elem in enumerate(listofTuples):
-            #embed.add_field(
             elem_0, elem_1 = elem[1].split(',')[0], elem[1].split(',')[1]
             embed.add_field(name=f'{i + 1}: {elem[0]}', value=f'level {elem_0} \n {elem_1}% to next level', inline=False)
-            #await ctx.send(f'{elem[0]}:{elem[1]} ')
-            #print(i)
+
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
-
-        '''for value in leaderboard_order.values():
-            value_list.append(value.split(',')[1])
-        print(sorted(value_list))
-
-        for key in leaderboard_order.keys():
-            print(key)
-        '''
-             # TODO:iterate this with the loop above and pair it in an f string to make the leaderboard
-
-        #await ctx.send(sorted(data['user-xp'].values().split(',')[1]))
-        #for value in data['user-xp'].values():
-        #    await ctx.send(value)
-
-
-        #embed.add_field(name=key, value=f'level {data["user-xp"][key].split(",")[1]} \n current xp: {data["user-xp"][key].split(",")[0]}%', inline=False)
-        #await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(messages(bot))

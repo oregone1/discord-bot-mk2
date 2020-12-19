@@ -27,7 +27,11 @@ class greet(commands.Cog):
         data['user-xp'][str(member)] = "0,0"
         with open('./users.json', 'w') as w:
             json.dump(data, w, indent=2, ensure_ascii=False)
-        print(f'{member} joined the server and was registered to the json file')
+
+        role = discord.utils.get(member.guild.roles, name="Cool Person")
+        await client.add_roles(member, test)
+
+        print(f'{member} joined the server, was given {role}, and was registered to the json file')
 
 def setup(bot):
     bot.add_cog(greet(bot))
