@@ -3,7 +3,6 @@
 import discord
 import time
 from discord.ext import commands
-from cogs.greet import greet
 
 intents = discord.Intents.default()
 intents.members = True
