@@ -21,7 +21,11 @@ class messages(commands.Cog):
                 exp[0], exp[1] = int(exp[0]), int(exp[1])
                 exp[1] = 0
                 exp[0] += 1
-                await message.channel.send(f'{author} levelled up!')
+                embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="level up")
+                embed.set_thumbnail(url=f"{author.avatar_url}")
+                embed.timestamp = datetime.datetime.utcnow()
+                embed.add_field(name='level up', value=f'{author} has reached level {exp[0]}')
+                await message.channel.send(embed=embed)
                 print(exp[0],':', exp[1])
 
             data['user-xp'][str(author)] = f'{exp[0]},{exp[1]}'
