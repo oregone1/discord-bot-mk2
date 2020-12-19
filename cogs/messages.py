@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord import Embed
 import json
+import datetime
 
 class messages(commands.Cog):
     def __init__(self, bot, *args, **kwargs):
@@ -14,14 +15,14 @@ class messages(commands.Cog):
                 data = json.load(f)
             exp = data['user-xp'][str(author)]
             exp = exp.split(',')
-            print(exp[0])
-            exp[0] = int(exp[0]) + 1
-            if int(exp[0]) > 99:
+            print(exp[1])
+            exp[1] = int(exp[1]) + 1
+            if int(exp[1]) > 99:
                 exp[0], exp[1] = int(exp[0]), int(exp[1])
-                exp[0] = 0
-                exp[1] += 1
+                exp[1] = 0
+                exp[0] += 1
                 await message.channel.send(f'{author} levelled up!')
-                print(exp[0], exp[1])
+                print(exp[0],':', exp[1])
 
             data['user-xp'][str(author)] = f'{exp[0]},{exp[1]}'
             with open('./users.json', 'w') as w:
@@ -38,14 +39,35 @@ class messages(commands.Cog):
     @commands.command()
     async def leaderboard(self, ctx):
         leaderboard_order = {}
+        value_list = []
         with open('./users.json', 'r') as f:
             data = json.load(f)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
 
-        for key in data['user-xp'].keys():
-            leaderboard_order[key] = data['user-xp'][key].split(',')[1]
+        #for key in data['user-xp'].keys():
+            #leaderboard_order[key] = data['user-xp'][key].split(',')[1]
 
-        print(sorted(leaderboard_order.values())) # TODO:iterate this with the loop above and pair it in an f string to make the leaderboard
+        leaderboard_order = data['user-xp']
+
+        listofTuples = sorted(leaderboard_order.items() , reverse=True, key=lambda x: x[1])
+        # Iterate over the sorted sequence
+        for i, elem in enumerate(listofTuples):
+            #embed.add_field(
+            elem_0, elem_1 = elem[1].split(',')[0], elem[1].split(',')[1]
+            embed.add_field(name=f'{i + 1}: {elem[0]}', value=f'level {elem_0} \n {elem_1}% to next level', inline=False)
+            #await ctx.send(f'{elem[0]}:{elem[1]} ')
+            #print(i)
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+        '''for value in leaderboard_order.values():
+            value_list.append(value.split(',')[1])
+        print(sorted(value_list))
+
+        for key in leaderboard_order.keys():
+            print(key)
+        '''
+             # TODO:iterate this with the loop above and pair it in an f string to make the leaderboard
 
         #await ctx.send(sorted(data['user-xp'].values().split(',')[1]))
         #for value in data['user-xp'].values():
