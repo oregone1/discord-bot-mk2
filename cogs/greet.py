@@ -14,7 +14,7 @@ class greet(commands.Cog):
         with open('./users.json', 'r') as jsonfile:
             data = json.load(jsonfile)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com",
-        description=f"Welcome to the server, {member.mention}! Please go to #ip to join the server.")
+        description=f"Welcome to the server, {member.mention}!")
 
         embed.set_thumbnail(url=f"{member.avatar_url}")
         embed.set_author(name=f"{member.name}", icon_url=f"{member.avatar_url}")
