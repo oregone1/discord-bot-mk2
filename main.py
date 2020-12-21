@@ -16,7 +16,8 @@ with open('secret.txt', 'r') as f:
 extensions = [
             'cogs.greet',
             'cogs.messages',
-            'cogs.admin'
+            'cogs.admin',
+            'cogs.help'
 ]
 
 for extension in extensions:

@@ -1,5 +1,6 @@
 import discord
 import datetime
+import json
 from discord.ext import commands
 from discord import Embed
 
@@ -10,7 +11,7 @@ class help(commands.Cog):
 
     @commands.command()
     async def help(self, ctx):
-        with open("help.json") as f:
+        with open("./help.json") as f:
             data = json.load(f)
 
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com/", description="Help")

@@ -1,8 +1,9 @@
 import discord
-from discord.ext import commands
-from discord import Embed
 import json
 import datetime
+from discord.ext import commands
+from discord import Embed
+from time import ctime
 
 class messages(commands.Cog):
     def __init__(self, bot, *args, **kwargs):
@@ -38,6 +39,8 @@ class messages(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        with open('./log', 'a+') as f:
+            f.writelines(f'{ctime()}: {message.author}: {message.content}\n  ')
         await self.update_user(message)
 
     @commands.command()

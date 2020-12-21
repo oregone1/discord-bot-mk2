@@ -28,7 +28,8 @@ class greet(commands.Cog):
         with open('./users.json', 'w') as w:
             json.dump(data, w, indent=2, ensure_ascii=False)
 
-        await member.add_roles(member, guild.get_role(789045046040461314))
+        role = discord.utils.get(member.guild.roles, name="Cool Person")
+        await member.add_roles(role)
 
         print(f'{member} joined the server, was given {role}, and was registered to the json file')
 

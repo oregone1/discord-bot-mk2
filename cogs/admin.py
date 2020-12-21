@@ -67,6 +67,10 @@ class admin(commands.Cog):
         await member.kick(reason=reason)
         await ctx.send(f'{member} was kicked by {ctx.message.author} for {reason}')
 
+    @commands.command()
+    async def test(self, ctx):
+        await ctx.send(type(ctx.message.author))
+
 def setup(bot):
     bot.add_cog(admin(bot))
     print('\'admin\' is loaded')
