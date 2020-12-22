@@ -17,7 +17,8 @@ extensions = [
             'cogs.greet',
             'cogs.messages',
             'cogs.admin',
-            'cogs.help'
+            'cogs.help',
+            'cogs.voice'
 ]
 
 for extension in extensions:
