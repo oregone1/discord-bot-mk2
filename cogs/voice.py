@@ -12,41 +12,10 @@ class voice(commands.Cog):
 
     def __init__(self, bot, *args, **kwargs):
         self.bot = bot
+        self.queue = []
 
-# TODO: change this to a callable function to allow a better queue system
-    async def play(self, ctx, *args):
-        voice = get(self.bot.voice_clients, guild=ctx.guild)
-        input = ''.join(args[:])
-
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-                }],
-            }
-
-        if 'https://www.youtube.com' not in input:
-            results = YoutubeSearch(input, max_results=1).to_dict()
-            await ctx.send(f'found: {results[0]['title']}')
-            input = 'https://www.youtube.com' + str(results[0]['url_suffix'])
-
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            print("Downloading audio now\n")
-            ydl.download([input])
-
-        for file in os.listdir("./"):
-            if file.endswith(".mp3"):
-                name = file
-                print(f"Renamed File: {file}\n")
-                os.rename(file, "song.mp3")
-
-        voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: os.remove('./song.mp3'))
-        voice.source = discord.PCMVolumeTransformer(voice.source)
-        voice.source.volume = 0.25
-
-        #os.remove('./song.mp3') # could be problematic, maybe should be moved to voice.play lambda function
+    async def queue(self, url):
+        queue.append(url)
 
     @commands.command(aliases=['j'])
     async def join(self, ctx):
@@ -83,6 +52,45 @@ class voice(commands.Cog):
         except:
             await ctx.send('cannot leave when not in a channel')
             print('leave called while not in a channel')
+
+    @commands.command(aliases=['p'])
+    async def play(self, ctx, *args):
+        voice = get(self.bot.voice_clients, guild=ctx.guild)
+        input = ''.join(args[:])
+
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+                }],
+            }
+
+        if 'https://www.youtube.com' not in input:
+            results = YoutubeSearch(input, max_results=1).to_dict()
+            await ctx.send(f'found: {results[0]["title"]}')
+            input = 'https://www.youtube.com' + str(results[0]['url_suffix'])
+
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            print("Downloading audio now\n")
+            ydl.download([input])
+
+        if not voice.is_playing():
+
+            for file in os.listdir("./"):
+                if file.endswith(".mp3"):
+                    name = file
+                    print(f"Renamed File: {file}\n")
+                    os.rename(file, "song.mp3")
+
+            voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: os.remove('./song.mp3'))
+            voice.source = discord.PCMVolumeTransformer(voice.source)
+            voice.source.volume = 0.25
+
+        else:
+            self.queue(input) # TODO: queue function
+            await ctx.send('queue test')
 
 def setup(bot):
     bot.add_cog(voice(bot))
