@@ -53,6 +53,18 @@ class voice(commands.Cog):
             await ctx.send('cannot leave when not in a channel')
             print('leave called while not in a channel')
 
+    @commands.command()
+    async def tts(self, ctx, *args):
+        voice = get(self.bot.voice_clients, guild=ctx.guild)
+
+        say = ' '.join(args[:])
+        tts = gTTS(say)
+        tts.save('ttssay.mp3')
+
+        voice.play(discord.FFmpegPCMAudio("ttssay.mp3"), after=lambda e: print("tts done!"))
+        voice.source = discord.PCMVolumeTransformer(voice.source)
+        voice.source.volume = 0.50
+
     @commands.command(aliases=['p'])
     async def play(self, ctx, *args):
         voice = get(self.bot.voice_clients, guild=ctx.guild)
@@ -86,7 +98,7 @@ class voice(commands.Cog):
 
             voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: os.remove('./song.mp3'))
             voice.source = discord.PCMVolumeTransformer(voice.source)
-            voice.source.volume = 0.25
+            voice.source.volume = 2.25
 
         else:
             self.queue(input) # TODO: queue function
