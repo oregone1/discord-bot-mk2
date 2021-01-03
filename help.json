@@ -13,8 +13,16 @@
       "functions": "Plays the specified youtube URL"
     },
     {
+      "name": "./tts (message)",
+      "functions": "says a message allowed in a voice channel"
+    }
+    {
       "name": "**XP Commands** \n./leaderboard",
       "functions": "Shows how much XP you have compared to others"
+    },
+    {
+      "name": "./register",
+      "functions": "registers you to the scoreboard"
     },
     {
       "name": "**Admin Commands**\n./load (cog)",

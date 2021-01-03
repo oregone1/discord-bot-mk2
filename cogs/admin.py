@@ -1,5 +1,6 @@
 import discord
 import time
+import random
 from discord.ext import commands
 
 class admin(commands.Cog):
@@ -34,7 +35,7 @@ class admin(commands.Cog):
             if e == 'discord.ext.commands.errors.MissingPermissions: You are missing Administrator permission(s) to run this command.':
                 await ctx.send('your must have admin permissions to run this command.')
             elif 'discord.ext.commands.errors.MissingRequiredArgument: cog is a required argument that is missing.' in e:
-                await ctx.send('you must specify a cog to load')
+                await ctx.send('you must specify a co🇵g to load')
             else:
                 await ctx.send('unkown error, check the log for details')
                 print(e)
@@ -66,6 +67,13 @@ class admin(commands.Cog):
     async def kick(self, ctx, member: discord.Member, reason=None):
         await member.kick(reason=reason)
         await ctx.send(f'{member} was kicked by {ctx.message.author} for {reason}')
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        reaction_list = ['🇵','🇴','🇰','🇮','🇲','🇦','🇳','🇪']
+        if random.randint(0, 100) == 27:
+            for reaction in reaction_list:
+                await message.add_reaction(reaction)
 
     @commands.command()
     async def test(self, ctx):

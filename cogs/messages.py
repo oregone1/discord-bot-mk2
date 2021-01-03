@@ -48,19 +48,13 @@ class messages(commands.Cog):
             data = json.load(f)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
         for user in data["users"]:
-            scores[data["users"][user]["level"]] = data["users"][user]["username"]
+            scores[data["users"][user]["level"], len(scores)] = data["users"][user]["username"]
         print(sorted(scores.keys(), reverse=True))
         for score in sorted(scores.keys(), reverse=True):
             if i < 11:
                 print(score)
-                #print(data["users"][scores[score]]["level"])
 
-                #percentage = data["users"][scores[score]]["prog-to-next-level"]
-                #percentage_mod = 100 + 25 * score
-
-                #print(percentage, percentage_mod, percentage/percentage_mod, percentage/percentage_mod*100)
-
-                embed.add_field(name=f'{i}: {scores[score]}', value=f'{scores[score]} is at level {score}', inline=False)#value=f'{(data["users"][scores[score]]["prog-to-next-level"] / 100 + 25 * score) * 100}% to level {score + 1}', inline=False)
+                embed.add_field(name=f'{i}: {scores[score]}', value=f'{scores[score]} is at level {score[0]}', inline=False)
                 i += 1
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
