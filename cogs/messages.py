@@ -10,32 +10,29 @@ class messages(commands.Cog):
         self.bot = bot
 
     async def update_user(self, message):
-        author = message.author
-        if not str(author) == 'discord-bot-mk2#1717':
-            with open('./users.json', 'r') as f:
-                data = json.load(f)
-            exp = data['user-xp'][str(author)]
-            exp = exp.split(',')
-            print(exp[1])
-            exp[1] = int(exp[1]) + 1
-            if int(exp[1]) > 99:
-                exp[0], exp[1] = int(exp[0]), int(exp[1])
-                exp[1] = 0
-                exp[0] += 1
-                embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="level up")
-                embed.set_thumbnail(url=f"{author.avatar_url}")
-                embed.timestamp = datetime.datetime.utcnow()
-                embed.add_field(name='level up', value=f'{author} has reached level {exp[0]}')
-                await message.channel.send(embed=embed)
-                print(exp[0],':', exp[1])
+        embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="level up")
+        author = str(message.author)
 
-            data['user-xp'][str(author)] = f'{exp[0]},{exp[1]}'
-            with open('./users.json', 'w') as w:
-                print(data)
-                json.dump(data, w, indent=2, ensure_ascii=False)
+        with open('./users.json', 'r') as f:
+            data = json.load(f)
+
+        if not author == 'discord-bot-mk2#1717':
+
+            data["users"][author]["prog-to-next-level"] += 1
+
+            if data["users"][author]["prog-to-next-level"] >= 100 + 25 * data["users"][author]["level"]:
+                data["users"][author]["prog-to-next-level"] = 0
+                data["users"][author]["level"] += 1
+                embed.set_thumbnail(url=f"{message.author.avatar_url}")
+                embed.timestamp = datetime.datetime.utcnow()
+                embed.add_field(name=f"@{message.author.mention} leveled up!", value=f"{author} is now level {data['users'][author]['level']}")
+                await message.channel.send(embed=embed)
 
         else:
             print('message sent was by discord-bot and was therefor ignored')
+
+        with open('./users.json', 'w') as w:
+            json.dump(data, w, indent=2, ensure_ascii=False)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -45,21 +42,37 @@ class messages(commands.Cog):
 
     @commands.command()
     async def leaderboard(self, ctx):
-        leaderboard_order = {}
-        value_list = []
+        scores = {}
+        i = 1
         with open('./users.json', 'r') as f:
             data = json.load(f)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
+        for user in data["users"]:
+            scores[data["users"][user]["level"]] = data["users"][user]["username"]
+        print(sorted(scores.keys(), reverse=True))
+        for score in sorted(scores.keys(), reverse=True):
+            if i < 11:
+                print(score)
+                #print(data["users"][scores[score]]["level"])
 
-        leaderboard_order = data['user-xp']
+                #percentage = data["users"][scores[score]]["prog-to-next-level"]
+                #percentage_mod = 100 + 25 * score
 
-        listofTuples = sorted(leaderboard_order.items() , reverse=True, key=lambda x: x[1])
-        for i, elem in enumerate(listofTuples):
-            elem_0, elem_1 = elem[1].split(',')[0], elem[1].split(',')[1]
-            embed.add_field(name=f'{i + 1}: {elem[0]}', value=f'level {elem_0} \n {elem_1}% to next level', inline=False)
+                #print(percentage, percentage_mod, percentage/percentage_mod, percentage/percentage_mod*100)
 
+                embed.add_field(name=f'{i}: {scores[score]}', value=f'{scores[score]} is at level {score}', inline=False)#value=f'{(data["users"][scores[score]]["prog-to-next-level"] / 100 + 25 * score) * 100}% to level {score + 1}', inline=False)
+                i += 1
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def register(self, ctx):
+        with open('./users.json', 'r') as jsonfile:
+            data = json.load(jsonfile)
+        data['users'][str(ctx.message.author)] = json.loads('{"username": "'+str(ctx.message.author)+'", "warns": [], "level": 0, "prog-to-next-level": 0}')
+        with open('./users.json', 'w') as w:
+            json.dump(data, w, indent=2, ensure_ascii=False)
+        await ctx.send(f'{ctx.message.author.mention} was registered to the scoreboard')
 
 def setup(bot):
     bot.add_cog(messages(bot))
