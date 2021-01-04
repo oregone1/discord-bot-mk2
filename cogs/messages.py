@@ -39,6 +39,7 @@ class messages(commands.Cog):
         with open('./log', 'a+') as f:
             f.writelines(f'{ctime()}: {message.author}: {message.content}\n  ')
         await self.update_user(message)
+        print((f'{ctime()}: {message.author}: {message.content}\n  '))
 
     @commands.command()
     async def leaderboard(self, ctx):
@@ -48,7 +49,7 @@ class messages(commands.Cog):
             data = json.load(f)
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
         for user in data["users"]:
-            scores[data["users"][user]["level"], len(scores)] = data["users"][user]["username"]
+            scores[data["users"][user]["level"], data["users"][user]["prog-to-next-level"], len(scores)] = data["users"][user]["username"]
         print(sorted(scores.keys(), reverse=True))
         for score in sorted(scores.keys(), reverse=True):
             if i < 11:
