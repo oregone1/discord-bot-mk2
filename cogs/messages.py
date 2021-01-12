@@ -11,25 +11,24 @@ class messages(commands.Cog):
 
     async def update_user(self, message):
         embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="level up")
-        author = str(message.author)
 
         with open('./users.json', 'r') as f:
             data = json.load(f)
 
-        if not author == 'discord-bot-mk2#1717':
+        if not str(message.author) == 'discord-bot-mk2#1717':
 
-            data["users"][author]["prog-to-next-level"] += 1
+            data["users"][str(message.author.id)]["prog-to-next-level"] += 1
 
-            if data["users"][author]["prog-to-next-level"] >= 100 + 25 * data["users"][author]["level"]:
-                data["users"][author]["prog-to-next-level"] = 0
-                data["users"][author]["level"] += 1
+            if data["users"][str(message.author.id)]["prog-to-next-level"] >= 100 + 25 * data["users"][str(message.author.id)]["level"]:
+                data["users"][str(message.author.id)]["prog-to-next-level"] = 0
+                data["users"][str(message.author.id)]["level"] += 1
                 embed.set_thumbnail(url=f"{message.author.avatar_url}")
                 embed.timestamp = datetime.datetime.utcnow()
-                embed.add_field(name=f"@{message.author.mention} leveled up!", value=f"{author} is now level {data['users'][author]['level']}")
+                embed.add_field(name=f"@{message.author.mention} leveled up!", value=f"{message.author} is now level {data['users'][str(message.author.id)]['level']}")
                 await message.channel.send(embed=embed)
 
         else:
-            print('message sent was by discord-bot and was therefor ignored')
+            print(f'bot said: {message.content}')
 
         with open('./users.json', 'w') as w:
             json.dump(data, w, indent=2, ensure_ascii=False)
@@ -40,6 +39,7 @@ class messages(commands.Cog):
             f.writelines(f'{ctime()}: {message.author}: {message.content}\n  ')
         await self.update_user(message)
         print((f'{ctime()}: {message.author}: {message.content}\n  '))
+        print(message.author.id)
 
     @commands.command()
     async def leaderboard(self, ctx):
@@ -64,7 +64,7 @@ class messages(commands.Cog):
     async def register(self, ctx):
         with open('./users.json', 'r') as jsonfile:
             data = json.load(jsonfile)
-        data['users'][str(ctx.message.author)] = json.loads('{"username": "'+str(ctx.message.author)+'", "warns": [], "level": 0, "prog-to-next-level": 0}')
+        data['users'][str(ctx.message.author.id)] = json.loads('{"username": "'+str(ctx.message.author)+'", "warns": [], "level": 0, "prog-to-next-level": 0}')
         with open('./users.json', 'w') as w:
             json.dump(data, w, indent=2, ensure_ascii=False)
         await ctx.send(f'{ctx.message.author.mention} was registered to the scoreboard')

@@ -24,7 +24,7 @@ class greet(commands.Cog):
         channel = self.bot.get_channel(id=789043746255536169)
 
         await channel.send(embed=embed)
-        data['users'][str(member)] = json.loads('{"username": "'+str(member)+'", "warns": [], "level": 0, "prog-to-next-level": 0}')
+        data['users'][str(member.id)] = json.loads('{"username": "'+str(member)+'", "warns": [], "level": 0, "prog-to-next-level": 0}')
         with open('./users.json', 'w') as w:
             json.dump(data, w, indent=2, ensure_ascii=False)
 
