@@ -27,6 +27,8 @@ class messages(commands.Cog):
                 embed.add_field(name=f"@{message.author.mention} leveled up!", value=f"{message.author} is now level {data['users'][str(message.author.id)]['level']}")
                 await message.channel.send(embed=embed)
 
+            # print(data["users"][str(message.author.id)]["prog-to-next-level"]/(100 + 25 * data["users"][str(message.author.id)]["level"]))
+
         else:
             print(f'bot said: {message.content}')
 
@@ -36,9 +38,9 @@ class messages(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         with open('./log', 'a+') as f:
-            f.writelines(f'{ctime()}: {message.author}: {message.content}\n  ')
+            f.writelines(f'{ctime()}: {message.author}: {message.content}\n')
         await self.update_user(message)
-        print((f'{ctime()}: {message.author}: {message.content}\n  '))
+        print((f'{ctime()}: {message.author}: {message.content}'))
         print(message.author.id)
 
     @commands.command()
@@ -55,7 +57,9 @@ class messages(commands.Cog):
             if i < 11:
                 print(score)
 
-                embed.add_field(name=f'{i}: {scores[score]}', value=f'{scores[score]} is at level {score[0]}', inline=False)
+                level_percent = score[1]/(100 + 25 * score[0]) * 100
+
+                embed.add_field(name=f'{i}: {scores[score]}', value=f'{scores[score]} is at level {score[0]}\nand is {str(level_percent)[:4]}% to level {score[0] + 1}', inline=False)
                 i += 1
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
@@ -68,6 +72,15 @@ class messages(commands.Cog):
         with open('./users.json', 'w') as w:
             json.dump(data, w, indent=2, ensure_ascii=False)
         await ctx.send(f'{ctx.message.author.mention} was registered to the scoreboard')
+
+    @commands.command()
+    async def score(self, ctx, user: discord.Member):
+        embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description=f"{str(user)}s score")
+        with open('./users.json', 'r') as f:
+            data = json.load(f)
+        embed.set_thumbnail(url=f"{user.avatar_url}")
+        embed.add_field(name=f'user\'s level:', value=f'{user} is level {data["users"][str(user.id)]["level"]}', inline=True)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(messages(bot))
