@@ -2,7 +2,11 @@
 
 import discord
 import time
+import os
 from discord.ext import commands
+
+os.chdir('/home/henry/github/discord-bot-mk2/')
+print(os.system('pwd'))
 
 intents = discord.Intents.default()
 intents.members = True
