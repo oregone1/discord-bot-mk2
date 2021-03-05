@@ -41,27 +41,33 @@ class messages(commands.Cog):
             f.writelines(f'{ctime()}: {message.author}: {message.content}\n')
         await self.update_user(message)
         print((f'{ctime()}: {message.author}: {message.content}'))
-        print(message.author.id)
+        print(message.channel.id)
 
     @commands.command()
-    async def leaderboard(self, ctx):
+    async def leaderboard(self, ctx, index=1):
         scores = {}
         i = 1
+        fields = []
         with open('./users.json', 'r') as f:
             data = json.load(f)
-        embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
         for user in data["users"]:
             scores[data["users"][user]["level"], data["users"][user]["prog-to-next-level"], len(scores)] = data["users"][user]["username"]
         print(sorted(scores.keys(), reverse=True))
         for score in sorted(scores.keys(), reverse=True):
-            if i < 11:
-                print(score)
+            print(score)
 
-                level_percent = score[1]/(100 + 25 * score[0]) * 100
+            level_percent = score[1]/(100 + 25 * score[0]) * 100
 
-                embed.add_field(name=f'{i}: {scores[score]}', value=f'{scores[score]} is at level {score[0]}\nand is {str(level_percent)[:4]}% to level {score[0] + 1}', inline=False)
-                i += 1
+            fields.append((f'{i}: {scores[score]}', f'{scores[score]} is at level {score[0]}\nand is {str(level_percent)[:4]}% to level {score[0] + 1}'))
+            i += 1
+
+        embed = discord.Embed(color=(0x84fa), url="https://discordapp.com", description="leaderboard")
         embed.timestamp = datetime.datetime.utcnow()
+
+        if index == 1:
+            for user in fields:
+                embed.add_field(name=user[0], value=user[1], inline=False)
+
         await ctx.send(embed=embed)
 
     @commands.command()

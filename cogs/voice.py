@@ -3,6 +3,7 @@ import youtube_dl
 import os
 import shutil
 import json
+import requests
 from discord.ext import commands
 from discord.utils import get
 from youtube_search import YoutubeSearch
@@ -31,7 +32,7 @@ class voice(commands.Cog):
                 print(f'bot connected to {channel}')
 
             await ctx.send(f'joined {channel}')
-        except exception as e:
+        except Exception as e:
             print('critical error:', e)
 
     @commands.command(aliases=['l'])
@@ -55,9 +56,29 @@ class voice(commands.Cog):
 
     @commands.command()
     async def tts(self, ctx, *args):
+        say = ''
         voice = get(self.bot.voice_clients, guild=ctx.guild)
 
-        say = ' '.join(args[:])
+        if ctx.message.attachments:
+            try:
+                os.system('rm -rf message.txt')
+            except:
+                pass
+            url = str(ctx.message.attachments).split('url=')[1].split('\'')[1]
+            r = requests.get(url)
+            os.system('touch message.txt')
+            f = open('message.txt', 'r+')
+            for chunk in r.iter_content(chunk_size=512 * 1024):
+                if chunk:
+                    f.write(str(chunk))
+
+            say = f.read()
+            print(f.read())
+            f.close()
+
+        else:
+            say = ' '.join(args[:])
+
         tts = gTTS(say)
         tts.save('ttssay.mp3')
 
@@ -65,11 +86,7 @@ class voice(commands.Cog):
         voice.source = discord.PCMVolumeTransformer(voice.source)
         voice.source.volume = 0.50
 
-    @commands.command(aliases=['p'])
-    async def play(self, ctx, *args):
-        voice = get(self.bot.voice_clients, guild=ctx.guild)
-        input = ''.join(args[:])
-
+    async def playFunc(self, ctx, input, voice):
         ydl_opts = {
             'format': 'bestaudio/best',
             'postprocessors': [{
@@ -103,6 +120,14 @@ class voice(commands.Cog):
         else:
             self.queue(input) # TODO: queue function
             await ctx.send('queue test')
+
+    @commands.command(aliases=['p'])
+    async def play(self, ctx, *args):
+        voice = get(self.bot.voice_clients, guild=ctx.guild)
+        input = ''.join(args[:])
+        if not voice.is_playing():
+            await self.playFunc(ctx, input, voice)
+
 
 def setup(bot):
     bot.add_cog(voice(bot))

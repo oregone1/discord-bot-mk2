@@ -6,6 +6,7 @@ import json
 import os
 from discord.ext import commands
 from discord.ext.commands import MemberConverter
+
 converter = MemberConverter()
 
 class admin(commands.Cog):
@@ -37,23 +38,27 @@ class admin(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.command()
     async def unload(self, ctx, cog: str):
-        try:
-            self.bot.unload_extension(cog)
-            await ctx.send(f'{cog} unloaded')
-        except Exception as e:
-            await ctx.send('error \n'+str(e))
-            print(e)
+        if not cog == 'cogs.admin':
+            try:
+                self.bot.unload_extension(cog)
+                await ctx.send(f'{cog} unloaded')
+            except Exception as e:
+                await ctx.send('error \n'+str(e))
+                print(e)
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, limit: int):
-        time.sleep(.3)
-        await ctx.channel.purge(limit = limit + 1)
+        if not limit > 20:
+            time.sleep(.3)
+            await ctx.channel.purge(limit = limit + 1)
+        else:
+            await ctx.send('no.')
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def kick(self, ctx, member: discord.Member, reason=None):
-        if not str(member) == 'justsomelasagna#0847':
+        if str(member) != 'justsomelasagna#0847':
             await member.kick(reason=reason)
             await ctx.send(f'{member} was kicked by {ctx.message.author} for {reason}')
         else:
@@ -85,8 +90,8 @@ class admin(commands.Cog):
             for person in people:
                 try:
                     persons.pop(person)
-                except:
-                    print(person)
+                except Exception as e:
+                    print(person, e)
 
             for person in persons:
                 person = await converter.convert(ctx, person)
@@ -100,19 +105,36 @@ class admin(commands.Cog):
             embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
 
+#    @commands.command()
+#    @commands.has_permissions(administrator=True)
+#    async def set(self, ctx, )
+
+# TODO: finish this
+#    @commands.command()
+#    async def update(self, ctx, *args):
+#        if str(ctx.message.author.id) == '401857841255940096':
+#            target = ' '.join(args[:])
+#            os.system('git fetch')
+#            targets = target.split(',')
+#            for target in targets:
+#                print(target)
+#                await ctx.send(f'updating {target}')
+#                os.system(f'git checkout origin -- {target}')
+#                await ctx.send(f'{target} updated\n')
+#            os.system('killall alacritty')
+
     @commands.command()
-    async def update(self, ctx, *args):
+    async def announce(self, ctx, *args):
         if str(ctx.message.author.id) == '401857841255940096':
-            target = ' '.join(args[:])
-            os.system('git fetch')
-            targets = target.split(',')
-            for target in targets:
-                print(target)
-                await ctx.send(f'updating {target}')
-                os.system(f'git checkout origin -- {target}')
-                await ctx.send(f'{target} updated\n')
-            os.system('killall alacritty')
-            os.system('alacritty -e /home/henry/test.sh')
+            announcement = ' '.join(args[:])
+            channel = self.bot.get_channel(789045794229583883)
+            await channel.send(announcement)
+            await ctx.channel.purge(limit=1)
+
+    @commands.command()
+    async def unban(self, ctx, userid: int):
+        user = self.bot.fetch_user(userid)
+        await ctx.guild.unban(user)
 
     @commands.command()
     async def test(self, ctx):
